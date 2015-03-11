@@ -56,11 +56,11 @@ class Request
         $this->request = new \PhpBase\SmartArray($_REQUEST);
         $this->files = new \PhpBase\SmartArray($_FILES);
 
-        $uri = $_SERVER['REQUEST_URI'];
-        $qmPos = strpos($_SERVER['REQUEST_URI'], '?');
+        $uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+        $qmPos = strpos($uri, '?');
 
         if ($qmPos !== false) {
-            $uri = substr($_SERVER['REQUEST_URI'], 0, $qmPos);
+            $uri = substr($uri, 0, $qmPos);
         }
 
         $this->_path = ltrim($uri, '/');
