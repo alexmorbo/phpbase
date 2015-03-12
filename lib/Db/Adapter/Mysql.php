@@ -139,13 +139,32 @@ class Mysql extends \PhpBase\Db\Adapter
     public function makeWhere(array $where, array &$params)
     {
         $sql = '';
+        $comparators = [
+            '='  => 'eq',
+            '!=' => 'ne',
+            '<'  => 'lt',
+            '>'  => 'gt',
+            '<=' => 'le',
+            '>=' => 'ge'
+        ];
 
         if ($where) {
             $parts = [];
             foreach ($where as $key => $value) {
-                $ph = 'where_' . $key;
-                $parts[] = sprintf('`%s` = :%s', $key, $ph);
-                $params[$ph] = $value;
+
+                if (is_array($value)) {
+                    foreach ($value as $c => $v) {
+                        if (isset($comparators[$c])) {
+                            $ph = 'where_' . $key . '_' . $comparators[$c];
+                            $parts[] = sprintf('`%s` %s :%s', $key, $c, $ph);
+                            $params[$ph] = $v;
+                        }
+                    }
+                } else {
+                    $ph = 'where_' . $key;
+                    $parts[] = sprintf('`%s` = :%s', $key, $ph);
+                    $params[$ph] = $value;
+                }
             }
             $sql = 'WHERE ' . implode(' AND ', $parts);
         }

@@ -28,6 +28,28 @@ class MysqlAdapterTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('name', $params['where_name']);
         $this->assertEquals('', $db->makeWhere([], $params));
 
+        $this->assertEquals('WHERE `id` > :where_id_gt AND `id` < :where_id_lt AND `name` = :where_name',
+            $db->makeWhere(['id' => ['>' => 5, '<' => 10], 'name' => 'test'], $params)
+        );
+        $this->assertEquals(5, $params['where_id_gt']);
+        $this->assertEquals(10, $params['where_id_lt']);
+        $this->assertEquals('test', $params['where_name']);
+
+
+        $this->assertEquals('WHERE `age` >= :where_age_ge AND `age` <= :where_age_le',
+            $db->makeWhere(['age' => ['>=' => 18, '<=' => 25]], $params)
+        );
+        $this->assertEquals(18, $params['where_age_ge']);
+        $this->assertEquals(25, $params['where_age_le']);
+
+
+        $this->assertEquals('WHERE `age` = :where_age_eq AND `status` != :where_status_ne',
+            $db->makeWhere(['age' => ['=' => 25], 'status' => ['!=' => 'engaged']], $params)
+        );
+        $this->assertEquals(25, $params['where_age_eq']);
+        $this->assertEquals('engaged', $params['where_status_ne']);
+
+
         $this->assertEquals('SET `id` = :set_id, `name` = :set_name',
             $db->makeSet(['id' => 666, 'name' => 'name'], $params));
         $this->assertEquals(666, $params['set_id']);
