@@ -50,6 +50,13 @@ class MysqlAdapterTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('engaged', $params['where_status_ne']);
 
 
+        $this->assertEquals('WHERE `name` LIKE :where_name_lk AND `surname` LIKE :where_surname_lk',
+            $db->makeWhere(['name' => ['LIKE' => '%lolita%'], 'surname' => ['LIKE' => 'clarks%']], $params)
+        );
+        $this->assertEquals('%lolita%', $params['where_name_lk']);
+        $this->assertEquals('clarks%', $params['where_surname_lk']);
+
+
         $this->assertEquals('SET `id` = :set_id, `name` = :set_name',
             $db->makeSet(['id' => 666, 'name' => 'name'], $params));
         $this->assertEquals(666, $params['set_id']);
