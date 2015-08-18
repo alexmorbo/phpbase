@@ -57,6 +57,12 @@ class MysqlAdapterTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('clarks%', $params['where_surname_lk']);
 
 
+        $this->assertEquals('WHERE `id` IN :where_id_in',
+            $db->makeWhere(['id' => ['IN' => '1,2,3']], $params)
+        );
+        $this->assertEquals('1,2,3', $params['where_id_in']);
+
+
         $this->assertEquals('SET `id` = :set_id, `name` = :set_name',
             $db->makeSet(['id' => 666, 'name' => 'name'], $params));
         $this->assertEquals(666, $params['set_id']);
@@ -87,6 +93,7 @@ class MysqlAdapterTest extends PHPUnit_Framework_TestCase
         // Add 1 entry
         $this->assertInstanceOf('PDOStatement',
             $db->insert($table, ['foo' => '123', 'bar' => 456]));
+        $id = $db->getInsertId();
 
         // Selecting it
         $result = $db->select($table);
@@ -101,7 +108,6 @@ class MysqlAdapterTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(456, $row['bar']);
 
         // test update
-        $id = $db->getInsertId();
         $db->update($table, ['id' => $id], ['foo' => 'bazbaz']);
         $row = $db->select($table, ['id' => $id])->fetchAll(PDO::FETCH_ASSOC)[0];
         $this->assertEquals('bazbaz', $row['foo']);

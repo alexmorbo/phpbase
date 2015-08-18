@@ -6,6 +6,10 @@
         {
             "name": "Anton Permyakov",
             "email": "mynameistony@yandex.ru"
+        },
+        {
+            "name": "Aleksandr Nikitin",
+            "email": "alex@morbo.ru"
         }
     ],
     "require": {

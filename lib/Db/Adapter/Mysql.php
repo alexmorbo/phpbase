@@ -146,7 +146,8 @@ class Mysql extends \PhpBase\Db\Adapter
             '>'  => 'gt',
             '<=' => 'le',
             '>=' => 'ge',
-            'LIKE' => 'lk'
+            'LIKE' => 'lk',
+            'IN' => 'in'
         ];
 
         if ($where) {
